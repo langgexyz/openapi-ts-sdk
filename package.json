@@ -1,0 +1,50 @@
+{
+  "name": "ts-sdk-client",
+  "version": "1.0.0",
+  "description": "TypeScript SDK client library with multiple HTTP implementations (Axios, Fetch, Gateway)",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "commonjs",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "example": "node examples/commonjs-usage.js",
+    "clean": "rm -rf dist",
+    "test": "npm run build && node tests/test-commonjs.js",
+    "test:commonjs": "node tests/test-commonjs.js",
+    "prepublishOnly": "npm run clean && npm run build && npm run test:commonjs"
+  },
+  "keywords": [
+    "typescript", 
+    "sdk", 
+    "client", 
+    "http", 
+    "axios", 
+    "fetch", 
+    "gateway-ts-sdk"
+  ],
+  "author": "Dexx Team",
+  "license": "MIT",
+  "dependencies": {},
+  "peerDependencies": {
+    "gateway-ts-sdk": ">=1.0.0"
+  },
+  "peerDependenciesMeta": {
+    "gateway-ts-sdk": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "ts-node": "^10.9.0"
+  },
+  "files": [
+    "dist/**/*",
+    "src/**/*",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
