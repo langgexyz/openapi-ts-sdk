@@ -232,4 +232,36 @@ try {
   console.error('❌ Fetch 无效 JSON content 测试失败:', error.message);
 }
 
+// 7. 测试 Fetch 对真实服务（如果可用）
+console.log('\n7. Fetch 真实服务测试:');
+try {
+  const response = await fetch('https://httpbin.org/status/200', { 
+    method: 'GET',
+    timeout: 3000 
+  });
+  
+  if (response.ok) {
+    console.log('检测到 httpbin 可用，进行真实服务测试...');
+    
+    const builder = new FetchHttpBuilder('https://httpbin.org');
+    const http = builder
+      .setUri('/get')
+      .setMethod(HttpMethod.GET)
+      .addHeader('User-Agent', 'fetch-real-test/1.0.0')
+      .build();
+      
+    const [realResponse, realError] = await http.send();
+    
+    if (realError) {
+      console.error('❌ Fetch 真实服务测试失败:', realError.message);
+    } else {
+      console.log('✅ Fetch 真实服务测试成功');
+    }
+  } else {
+    console.log('⚠️  httpbin 不可用，跳过真实服务测试');
+  }
+} catch (error) {
+  console.log('⚠️  无法连接真实服务，跳过测试');
+}
+
 console.log('\n=== Fetch HTTP Builder 测试完成 ===');

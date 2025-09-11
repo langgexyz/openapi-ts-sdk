@@ -180,4 +180,39 @@ try {
   console.error('❌ Axios 无效 JSON content 测试失败:', error.message);
 }
 
+// 6. 测试 Axios 对真实服务（如果可用）
+console.log('\n6. Axios 真实服务测试:');
+try {
+  // 检查 httpbin 可用性
+  const response = await fetch('https://httpbin.org/status/200', { 
+    method: 'GET',
+    timeout: 3000 
+  });
+  
+  if (response.ok) {
+    console.log('检测到 httpbin 可用，进行真实服务测试...');
+    
+    const axiosInstance = new MockAxiosInstance();
+    const builder = new AxiosHttpBuilder('https://httpbin.org', axiosInstance);
+    
+    const http = builder
+      .setUri('/get')
+      .setMethod(HttpMethod.GET)
+      .addHeader('User-Agent', 'axios-real-test/1.0.0')
+      .build();
+      
+    const [realResponse, realError] = await http.send();
+    
+    if (realError) {
+      console.error('❌ Axios 真实服务测试失败:', realError.message);
+    } else {
+      console.log('✅ Axios 真实服务测试成功');
+    }
+  } else {
+    console.log('⚠️  httpbin 不可用，跳过真实服务测试');
+  }
+} catch (error) {
+  console.log('⚠️  无法连接真实服务，跳过测试');
+}
+
 console.log('\n=== Axios HTTP Builder 测试完成 ===');
