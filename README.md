@@ -201,13 +201,14 @@ ts-sdk-client/
 │   ├── fetch/                    # Fetch HTTP 实现
 │   │   ├── fetch-http-builder.ts # Fetch 实现
 │   │   └── index.ts              # Fetch 模块导出
-│   ├── types/                    # 类型定义目录
 │   └── index.ts                  # 主入口文件
 ├── dist/                         # 编译生成的 JavaScript 文件
-├── examples/                     # 使用示例
-│   └── commonjs-usage.js        # CommonJS 环境示例
-├── tests/                        # 测试文件
-│   └── test-commonjs.js         # CommonJS 兼容性测试
+├── tests/                        # 测试文件（按模块组织）
+│   ├── axios-http-builder.test.js    # Axios 实现完整测试
+│   ├── fetch-http-builder.test.js    # Fetch 实现完整测试
+│   ├── gateway-http-builder.test.js  # Gateway 实现完整测试
+│   ├── http-builder-core.test.js     # 核心功能测试
+│   └── README.md                     # 测试文档
 ├── package.json                  # 项目配置
 ├── tsconfig.json                # TypeScript 配置
 └── README.md                    # 项目文档
@@ -232,11 +233,14 @@ npm run build
 # 监听模式编译
 npm run watch
 
-# 运行测试
+# 运行所有测试
 npm test
 
-# 运行示例
-npm run example
+# 运行指定模块测试
+npm run test:core     # 核心功能测试
+npm run test:axios    # Axios 实现测试  
+npm run test:fetch    # Fetch 实现测试
+npm run test:gateway  # Gateway 实现测试
 
 # 清理编译产物
 npm run clean
@@ -333,9 +337,9 @@ const [response, error] = await http.send();
 ## 📞 支持与反馈
 
 - 提交 [Issues](../../issues) 报告 Bug 或提出建议
-- 查看 [Examples](examples/) 获取更多使用示例
 - 参考 [Tests](tests/) 了解功能测试用例
+- 查看 [Tests README](tests/README.md) 了解测试架构
 
 ---
 
-**Dexx Team** - 让 API 客户端开发更简单 🚀
+**langgexyz** - 让 API 客户端开发更简单 🚀
