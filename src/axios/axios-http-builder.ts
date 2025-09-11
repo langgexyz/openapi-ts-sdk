@@ -1,26 +1,5 @@
 import { HttpBuilder, Http, HttpMethod } from '../core';
-
-export interface AxiosRequestConfig {
-  method?: string;
-  url?: string;
-  headers?: Record<string, string>;
-  data?: unknown;
-  params?: Record<string, unknown>;
-  timeout?: number;
-  baseURL?: string;
-}
-
-export interface AxiosResponse<T = unknown> {
-  data: T;
-  status: number;
-  statusText: string;
-  headers: Record<string, string>;
-  config: AxiosRequestConfig;
-}
-
-export interface HttpRequester {
-  request<T = unknown>(config: AxiosRequestConfig): Promise<AxiosResponse<T>>;
-}
+import { AxiosRequestConfig, HttpRequester } from './axios.interface';
 
 /**
  * Axios HTTP Builder 实现

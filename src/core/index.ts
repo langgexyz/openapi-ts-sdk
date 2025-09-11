@@ -1,10 +1,6 @@
-// 核心接口
+// 核心接口 - 只包含基础定义
 export * from './http.interface';
 export * from './http-builder.abstract';
-
-// HTTP 实现相关接口
-export * from './axios.interface';
-export * from './gateway.interface';
 
 // 工具函数
 export * from './commonjs-utils';
