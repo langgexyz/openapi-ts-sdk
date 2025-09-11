@@ -30,14 +30,18 @@ export class FetchHttpBuilder extends HttpBuilder {
 
           // 对于 GET 请求，将 JSON 内容作为查询参数
           if (this.method_ === HttpMethod.GET && this.content_) {
-            const params = JSON.parse(this.content_);
-            const searchParams = new URLSearchParams();
-            
-            Object.entries(params).forEach(([key, value]) => {
-              searchParams.append(key, String(value));
-            });
-            
-            url += `?${searchParams.toString()}`;
+            try {
+              const params = JSON.parse(this.content_);
+              const searchParams = new URLSearchParams();
+              
+              Object.entries(params).forEach(([key, value]) => {
+                searchParams.append(key, String(value));
+              });
+              
+              url += `?${searchParams.toString()}`;
+            } catch {
+              // 如果不是 JSON，忽略内容
+            }
           } else if (this.content_ && this.method_ !== HttpMethod.GET) {
             options.body = this.content_;
           }

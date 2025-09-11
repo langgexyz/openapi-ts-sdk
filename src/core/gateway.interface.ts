@@ -20,4 +20,3 @@ export interface HeaderBuilder {
 export interface GatewayClient {
   send(command: string, data: any, responseType: any, headers?: GatewayHeaders): Promise<any>;
 }
-

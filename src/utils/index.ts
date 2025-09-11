@@ -1,2 +1,2 @@
 // 工具函数
-// 目前暂无工具函数
+export * from './runtime';

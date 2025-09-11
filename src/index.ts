@@ -7,6 +7,6 @@
 export * from './core';
 
 // HTTP 实现
-export * from './axios';
-export * from './gateway';
-export * from './fetch';
+export { AxiosHttpBuilder } from './axios';
+export { GatewayHttpBuilder, HeaderBuilder, GatewayClient } from './gateway';
+export { FetchHttpBuilder } from './fetch';

@@ -59,7 +59,11 @@ export class AxiosHttpBuilder extends HttpBuilder {
           const responseData = typeof response.data === 'string' 
             ? response.data 
             : JSON.stringify(response.data);
-        
+          
+          // 如果有 pusher，推送响应数据
+          if (this.pusher_) {
+            this.pusher_(responseData);
+          }
 
           return [responseData, null];
         } catch (error: any) {
