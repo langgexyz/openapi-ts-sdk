@@ -15,29 +15,23 @@
     "prepublishOnly": "npm run clean && npm run build && npm run test:commonjs"
   },
   "keywords": [
-    "typescript", 
-    "sdk", 
-    "client", 
-    "http", 
-    "axios", 
-    "fetch", 
+    "typescript",
+    "sdk",
+    "client",
+    "http",
+    "axios",
+    "fetch",
     "gateway-ts-sdk"
   ],
   "author": "Dexx Team",
   "license": "MIT",
-  "dependencies": {},
-  "peerDependencies": {
-    "gateway-ts-sdk": ">=1.0.0"
-  },
-  "peerDependenciesMeta": {
-    "gateway-ts-sdk": {
-      "optional": true
-    }
+  "dependencies": {
+    "gateway-ts-sdk": "file:../gateway-ts-sdk"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
-    "typescript": "^5.0.0",
-    "ts-node": "^10.9.0"
+    "ts-node": "^10.9.0",
+    "typescript": "^5.0.0"
   },
   "files": [
     "dist/**/*",

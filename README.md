@@ -7,10 +7,11 @@
 - 🔧 **多种 HTTP 实现**: 支持 Axios、原生 Fetch 和 Gateway
 - 📦 **TypeScript 原生支持**: 完整的类型定义和 IntelliSense 支持
 - 🔄 **统一接口**: 一致的 API 设计，轻松切换不同 HTTP 实现
-- 🛡️ **健壮的错误处理**: 规范化的错误响应格式
+- 🛡️ **健壮的错误处理**: 规范化的错误响应格式和早期验证
 - 🔌 **可扩展架构**: 基于抽象类的设计，方便扩展新的 HTTP 实现
 - 📱 **跨环境兼容**: 同时支持 Node.js 和浏览器环境
-- ⚡ **零依赖核心**: 核心功能无外部依赖，可选的 peer dependencies
+- ⚡ **零依赖核心**: 核心功能无外部依赖，轻量级设计
+- 🎯 **JSON 优先**: 强制 JSON 格式验证，确保 API 调用的一致性
 
 ## 🚀 快速开始
 
@@ -104,14 +105,14 @@ const [response, error] = await http.send();
 ```typescript
 import { GatewayHttpBuilder, HttpMethod } from 'ts-sdk-client';
 
-// 需要提供 Gateway 客户端和头部构建器
+// 需要提供 Gateway 客户端和头部构建器实例
 const gatewayClient = new YourGatewayClient();
-const headerBuilderClass = YourHeaderBuilder;
+const headerBuilder = new YourHeaderBuilder();
 
 const builder = new GatewayHttpBuilder(
   'https://api.example.com', 
   gatewayClient, 
-  headerBuilderClass
+  headerBuilder
 );
 
 const http = builder
@@ -163,6 +164,14 @@ const timeline = await api.searchTimeline({ caAddress: '0x123...' });
 
 ## 🏗️ 项目架构
 
+### 设计原则
+
+- **轻量级设计**: 核心功能无外部运行时依赖
+- **接口分离**: 每个 HTTP 实现包含自己的接口定义
+- **依赖注入**: 用户提供具体的 HTTP 客户端实例
+- **早期验证**: 在构建时验证 JSON 格式，避免运行时错误
+- **类型安全**: 使用 `unknown` 而非 `any`，强制类型检查
+
 ### 核心接口
 
 - `HttpBuilder`: 抽象构建器基类，定义统一的构建接口
@@ -171,9 +180,9 @@ const timeline = await api.searchTimeline({ caAddress: '0x123...' });
 
 ### 实现层
 
-- `AxiosHttpBuilder`: 基于 Axios 的实现
+- `AxiosHttpBuilder`: 基于 Axios 的实现（包含 Axios 接口定义）
 - `FetchHttpBuilder`: 基于原生 Fetch 的实现  
-- `GatewayHttpBuilder`: 基于 Gateway SDK 的实现
+- `GatewayHttpBuilder`: 基于 Gateway SDK 的实现（包含 Gateway 接口定义）
 
 ### 目录结构
 
@@ -181,17 +190,18 @@ const timeline = await api.searchTimeline({ caAddress: '0x123...' });
 ts-sdk-client/
 ├── src/                          # TypeScript 源代码
 │   ├── core/                     # 核心接口和抽象类
-│   │   ├── axios.interface.ts    # Axios 接口定义
-│   │   ├── gateway.interface.ts  # Gateway 接口定义
-│   │   ├── http.interface.ts     # HTTP 核心接口
-│   │   ├── http-builder.abstract.ts  # 抽象构建器
-│   │   ├── commonjs-utils.ts     # CommonJS 工具函数
+│   │   ├── http-builder.abstract.ts  # HTTP 构建器抽象类（包含接口）
 │   │   └── index.ts              # 核心模块导出
-│   ├── implementations/          # HTTP 实现
-│   │   ├── axios-http-builder.ts # Axios 实现
+│   ├── axios/                    # Axios HTTP 实现
+│   │   ├── axios-http-builder.ts # Axios 实现（包含接口定义）
+│   │   └── index.ts              # Axios 模块导出
+│   ├── gateway/                  # Gateway HTTP 实现
+│   │   ├── gateway-http-builder.ts # Gateway 实现（包含接口定义）
+│   │   └── index.ts              # Gateway 模块导出
+│   ├── fetch/                    # Fetch HTTP 实现
 │   │   ├── fetch-http-builder.ts # Fetch 实现
-│   │   ├── gateway-http-builder.ts # Gateway 实现
-│   │   └── index.ts              # 实现模块导出
+│   │   └── index.ts              # Fetch 模块导出
+│   ├── types/                    # 类型定义目录
 │   └── index.ts                  # 主入口文件
 ├── dist/                         # 编译生成的 JavaScript 文件
 ├── examples/                     # 使用示例
@@ -239,14 +249,24 @@ npm run clean
 3. **测试**: 运行 `npm test` 执行测试套件
 4. **发布**: 运行 `npm run prepublishOnly` 执行完整的发布前检查
 
-### 兼容性检查
+### JSON 内容验证
+
+所有的 `setContent()` 调用都会进行 JSON 格式验证：
 
 ```typescript
-import { checkCompatibility } from 'ts-sdk-client';
+import { FetchHttpBuilder, HttpMethod } from 'ts-sdk-client';
 
-const compatibility = checkCompatibility();
-console.log('Node.js:', compatibility.nodejs);
-console.log('Fetch API:', compatibility.fetch);
+const builder = new FetchHttpBuilder('https://api.example.com');
+
+try {
+  // 正确的 JSON 格式
+  builder.setContent(JSON.stringify({ key: 'value' }));
+  
+  // 错误的格式会抛出异常
+  builder.setContent('invalid json'); // 抛出错误
+} catch (error) {
+  console.error('Content must be valid JSON:', error.message);
+}
 ```
 
 ## 📋 API 参考
@@ -258,7 +278,7 @@ console.log('Fetch API:', compatibility.fetch);
 - `setUri(uri: string)`: 设置请求 URI
 - `setMethod(method: HttpMethod)`: 设置 HTTP 方法
 - `addHeader(key: string, value: string)`: 添加请求头
-- `setContent(content: string)`: 设置请求体内容
+- `setContent(content: string)`: 设置请求体内容（必须是有效的 JSON 格式）
 - `build()`: 构建 HTTP 请求实例
 
 **HTTP 方法枚举:**
