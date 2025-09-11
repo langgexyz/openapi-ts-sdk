@@ -8,16 +8,13 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc --watch",
-    "example": "node examples/commonjs-usage.js",
     "clean": "rm -rf dist",
     "test": "npm run build && npm run test:all",
-    "test:all": "npm run test:core && npm run test:axios && npm run test:fetch && npm run test:gateway && npm run test:environment",
+    "test:all": "npm run test:core && npm run test:axios && npm run test:fetch && npm run test:gateway",
     "test:core": "node tests/http-builder-core.test.js",
     "test:axios": "node tests/axios-http-builder.test.js",
     "test:fetch": "node tests/fetch-http-builder.test.js",
     "test:gateway": "node tests/gateway-http-builder.test.js",
-    "test:environment": "node tests/environment-compatibility.test.js",
-    "test:errors": "node tests/error-scenarios.test.js",
     "prepublishOnly": "npm run clean && npm run build && npm run test"
   },
   "keywords": [

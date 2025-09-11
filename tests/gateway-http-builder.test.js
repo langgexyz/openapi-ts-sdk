@@ -258,4 +258,69 @@ console.log('\n6. Gateway 真实服务测试:');
   }
 })();
 
+// 7. Gateway 错误场景测试
+console.log('\n7. Gateway 错误场景测试:');
+
+// Mock 失败的 Gateway 客户端
+class FailingGatewayClient {
+  async send(command, data, responseType, headers) {
+    const error = new Error('Gateway connection lost');
+    error.code = 'GATEWAY_CONNECTION_ERROR';
+    throw error;
+  }
+}
+
+(async () => {
+  try {
+    const failingClient = new FailingGatewayClient();
+    const headerBuilder = new MockHeaderBuilder();
+    const builder = new GatewayHttpBuilder('https://api.example.com', failingClient, headerBuilder);
+    
+    const http = builder
+      .setUri('/api/proxy')
+      .setMethod(HttpMethod.POST)
+      .setContent('{"test": "data"}')
+      .build();
+      
+    const [response, error] = await http.send();
+    
+    if (error && error.message.includes('Gateway connection lost') && 
+        error.code === 'GATEWAY_CONNECTION_ERROR') {
+      console.log('✅ Gateway 连接错误处理正确');
+    } else {
+      console.error('❌ Gateway 连接错误格式错误');
+    }
+    
+  } catch (error) {
+    console.error('❌ Gateway 错误场景测试失败:', error.message);
+  }
+})();
+
+// 8. Gateway 环境兼容性测试
+console.log('\n8. Gateway 环境兼容性测试:');
+try {
+  try {
+    const { createClient, HeaderBuilder } = require('gateway-ts-sdk');
+    console.log('✅ gateway-ts-sdk 模块可用');
+    console.log('✅ Gateway 依赖检查通过');
+    
+    // 测试构造函数参数验证
+    try {
+      const invalidBuilder = new GatewayHttpBuilder('https://api.example.com', null, null);
+    } catch (validationError) {
+      if (validationError.message.includes('client') || validationError.message.includes('headerBuilder')) {
+        console.log('✅ Gateway 构造函数参数验证正确');
+      }
+    }
+    
+  } catch (gatewayError) {
+    if (gatewayError.code === 'MODULE_NOT_FOUND') {
+      console.log('⚠️  gateway-ts-sdk 未安装，位于 ../gateway-ts-sdk');
+    }
+  }
+  
+} catch (error) {
+  console.error('❌ Gateway 环境兼容性测试失败:', error.message);
+}
+
 console.log('\n=== Gateway HTTP Builder 测试完成 ===');

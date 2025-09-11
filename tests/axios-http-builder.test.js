@@ -217,4 +217,105 @@ console.log('\n6. Axios 真实服务测试:');
   }
 })();
 
+// 7. Axios 错误场景测试
+console.log('\n7. Axios 错误场景测试:');
+
+// Mock 失败的 Axios 实例（错误场景专用）
+class AxiosFailingInstance {
+  async request(config) {
+    const error = new Error('Network connection failed');
+    error.response = {
+      status: 500,
+      statusText: 'Internal Server Error',
+      data: { error: 'Server is down' }
+    };
+    throw error;
+  }
+}
+
+// Mock 超时的 Axios 实例  
+class AxiosTimeoutInstance {
+  async request(config) {
+    const error = new Error('Request timeout');
+    error.code = 'ECONNABORTED';
+    throw error;
+  }
+}
+
+(async () => {
+  try {
+    // 测试网络错误
+    const failingInstance = new AxiosFailingInstance();
+    const builder1 = new AxiosHttpBuilder('https://api.example.com', failingInstance);
+    
+    const http1 = builder1
+      .setUri('/api/data')
+      .setMethod(HttpMethod.POST)
+      .setContent('{"test": "data"}')
+      .build();
+      
+    const [response1, error1] = await http1.send();
+    
+    if (error1 && error1.message.includes('Network connection failed') && 
+        error1.status === 500 && error1.data) {
+      console.log('✅ Axios 网络错误处理正确');
+    } else {
+      console.error('❌ Axios 网络错误格式错误');
+    }
+    
+    // 测试超时错误
+    const timeoutInstance = new AxiosTimeoutInstance();
+    const builder2 = new AxiosHttpBuilder('https://api.example.com', timeoutInstance);
+    
+    const http2 = builder2
+      .setUri('/api/slow')
+      .setMethod(HttpMethod.GET)
+      .build();
+      
+    const [response2, error2] = await http2.send();
+    
+    if (error2 && error2.message.includes('Request timeout')) {
+      console.log('✅ Axios 超时错误处理正确');
+    } else {
+      console.error('❌ Axios 超时错误格式错误');
+    }
+    
+  } catch (error) {
+    console.error('❌ Axios 错误场景测试失败:', error.message);
+  }
+})();
+
+// 8. Axios 环境兼容性测试
+console.log('\n8. Axios 环境兼容性测试:');
+try {
+  // 检查 axios 依赖
+  try {
+    const axios = require('axios');
+    const axiosInstance = axios.create({
+      timeout: 5000,
+      headers: { 'User-Agent': 'compatibility-test/1.0.0' }
+    });
+    
+    const builder = new AxiosHttpBuilder('https://api.example.com', axiosInstance);
+    console.log('✅ Axios 依赖检查通过');
+    
+    // 测试构造函数参数验证
+    try {
+      const invalidBuilder = new AxiosHttpBuilder('https://api.example.com', null);
+    } catch (validationError) {
+      if (validationError.message.includes('axiosInstance')) {
+        console.log('✅ Axios 构造函数参数验证正确');
+      }
+    }
+    
+  } catch (axiosError) {
+    if (axiosError.code === 'MODULE_NOT_FOUND') {
+      console.log('⚠️  axios 未安装，需要手动安装');
+    }
+  }
+  
+} catch (error) {
+  console.error('❌ Axios 环境兼容性测试失败:', error.message);
+}
+
 console.log('\n=== Axios HTTP Builder 测试完成 ===');

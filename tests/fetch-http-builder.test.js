@@ -266,4 +266,80 @@ console.log('\n7. Fetch 真实服务测试:');
   }
 })();
 
+// 8. Fetch 错误场景测试
+console.log('\n8. Fetch 错误场景测试:');
+(async () => {
+  try {
+    const originalFetch = global.fetch;
+    const errorStatuses = [
+      { status: 400, statusText: 'Bad Request' },
+      { status: 401, statusText: 'Unauthorized' },
+      { status: 404, statusText: 'Not Found' },
+      { status: 500, statusText: 'Internal Server Error' }
+    ];
+    
+    let successCount = 0;
+    const builder = new FetchHttpBuilder('https://api.example.com');
+    
+    for (const errorStatus of errorStatuses) {
+      global.fetch = async (url, options) => {
+        return {
+          ok: false,
+          status: errorStatus.status,
+          statusText: errorStatus.statusText,
+          text: async () => `{"error": "${errorStatus.statusText}"}`
+        };
+      };
+      
+      const http = builder
+        .setUri(`/api/error-${errorStatus.status}`)
+        .setMethod(HttpMethod.GET)
+        .build();
+        
+      const [response, error] = await http.send();
+      
+      if (error && error.message.includes(`HTTP ${errorStatus.status}`)) {
+        successCount++;
+      }
+    }
+    
+    global.fetch = originalFetch;
+    
+    if (successCount === errorStatuses.length) {
+      console.log('✅ Fetch HTTP 错误状态处理正确');
+    } else {
+      console.error(`❌ Fetch HTTP 错误状态处理失败: ${successCount}/${errorStatuses.length}`);
+    }
+    
+  } catch (error) {
+    console.error('❌ Fetch 错误场景测试失败:', error.message);
+  }
+})();
+
+// 9. Fetch 环境兼容性测试
+console.log('\n9. Fetch 环境兼容性测试:');
+try {
+  const hasFetch = typeof fetch !== 'undefined';
+  
+  if (hasFetch) {
+    console.log('✅ Fetch API 可用');
+    const builder = new FetchHttpBuilder('https://api.example.com');
+    console.log('✅ FetchHttpBuilder 在支持环境中构建成功');
+  } else {
+    console.log('⚠️  Fetch API 不可用');
+    
+    try {
+      const builder = new FetchHttpBuilder('https://api.example.com');
+      console.log('⚠️  FetchHttpBuilder 在不支持环境中仍能构建');
+    } catch (fetchError) {
+      if (fetchError.message.includes('Fetch API is not available')) {
+        console.log('✅ FetchHttpBuilder 正确检测环境不支持');
+      }
+    }
+  }
+  
+} catch (error) {
+  console.error('❌ Fetch 环境兼容性测试失败:', error.message);
+}
+
 console.log('\n=== Fetch HTTP Builder 测试完成 ===');
