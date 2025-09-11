@@ -212,48 +212,50 @@ try {
 
 // 6. 测试 Gateway 对真实服务（如果可用）
 console.log('\n6. Gateway 真实服务测试:');
-try {
-  const { createClient, HeaderBuilder } = require('gateway-ts-sdk');
-  
-  console.log('尝试连接到本地 Gateway 服务...');
-  
-  // 检查本地服务
-  const gatewayUrl = 'ws://localhost:18443';
-  const midwayUrl = 'http://localhost:7001';
-  
+(async () => {
   try {
-    const gatewayClient = createClient(gatewayUrl, 'gateway-test-client');
-    const realHeaderBuilder = new HeaderBuilder();
+    const { createClient, HeaderBuilder } = require('gateway-ts-sdk');
     
-    // 等待连接建立
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    console.log('尝试连接到本地 Gateway 服务...');
     
-    const builder = new GatewayHttpBuilder(midwayUrl, gatewayClient, realHeaderBuilder);
-    const http = builder
-      .setUri('/ping')
-      .setMethod(HttpMethod.GET)
-      .addHeader('User-Agent', 'gateway-real-test/1.0.0')
-      .build();
+    // 检查本地服务
+    const gatewayUrl = 'ws://localhost:18443';
+    const midwayUrl = 'http://localhost:7001';
+    
+    try {
+      const gatewayClient = createClient(gatewayUrl, 'gateway-test-client');
+      const realHeaderBuilder = new HeaderBuilder();
       
-    const [realResponse, realError] = await http.send();
-    
-    if (realError) {
-      console.error('❌ Gateway 真实服务测试失败:', realError.message);
-    } else {
-      console.log('✅ Gateway 真实服务测试成功');
+      // 等待连接建立
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      const builder = new GatewayHttpBuilder(midwayUrl, gatewayClient, realHeaderBuilder);
+      const http = builder
+        .setUri('/ping')
+        .setMethod(HttpMethod.GET)
+        .addHeader('User-Agent', 'gateway-real-test/1.0.0')
+        .build();
+        
+      const [realResponse, realError] = await http.send();
+      
+      if (realError) {
+        console.error('❌ Gateway 真实服务测试失败:', realError.message);
+      } else {
+        console.log('✅ Gateway 真实服务测试成功');
+      }
+      
+      gatewayClient.close();
+    } catch (serviceError) {
+      console.log('⚠️  本地 Gateway/Midway 服务不可用，跳过真实服务测试');
     }
     
-    gatewayClient.close();
-  } catch (serviceError) {
-    console.log('⚠️  本地 Gateway/Midway 服务不可用，跳过真实服务测试');
+  } catch (error) {
+    if (error.code === 'MODULE_NOT_FOUND') {
+      console.log('⚠️  gateway-ts-sdk 未安装，跳过真实服务测试');
+    } else {
+      console.error('❌ Gateway 真实服务测试失败:', error.message);
+    }
   }
-  
-} catch (error) {
-  if (error.code === 'MODULE_NOT_FOUND') {
-    console.log('⚠️  gateway-ts-sdk 未安装，跳过真实服务测试');
-  } else {
-    console.error('❌ Gateway 真实服务测试失败:', error.message);
-  }
-}
+})();
 
 console.log('\n=== Gateway HTTP Builder 测试完成 ===');
