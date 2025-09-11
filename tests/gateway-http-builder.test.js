@@ -261,8 +261,8 @@ console.log('\n6. Gateway 真实服务测试:');
 // 7. Gateway 错误场景测试
 console.log('\n7. Gateway 错误场景测试:');
 
-// Mock 失败的 Gateway 客户端
-class FailingGatewayClient {
+// Mock 失败的 Gateway 客户端（错误场景专用）
+class GatewayFailingClient {
   async send(command, data, responseType, headers) {
     const error = new Error('Gateway connection lost');
     error.code = 'GATEWAY_CONNECTION_ERROR';
@@ -272,7 +272,7 @@ class FailingGatewayClient {
 
 (async () => {
   try {
-    const failingClient = new FailingGatewayClient();
+    const failingClient = new GatewayFailingClient();
     const headerBuilder = new MockHeaderBuilder();
     const builder = new GatewayHttpBuilder('https://api.example.com', failingClient, headerBuilder);
     
