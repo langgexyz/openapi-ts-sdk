@@ -26,6 +26,7 @@
   "author": "Dexx Team",
   "license": "MIT",
   "dependencies": {
+    "axios": "^1.11.0",
     "gateway-ts-sdk": "file:../gateway-ts-sdk"
   },
   "devDependencies": {

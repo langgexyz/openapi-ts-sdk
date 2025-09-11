@@ -54,10 +54,6 @@ export class FetchHttpBuilder extends HttpBuilder {
 
           const data = await response.text();
           
-          // 如果有 pusher，推送响应数据
-          if (this.pusher_) {
-            this.pusher_(data);
-          }
 
           return [data, null];
         } catch (error: any) {
