@@ -1,22 +1,15 @@
 import { HttpBuilder, Http, HttpMethod } from '../core';
-import type { AxiosRequestConfig, AxiosResponse, AxiosError } from 'axios';
-
-/**
- * HTTP 请求器接口 - 只需要一个通用的 request 方法
- */
-export interface HttpRequester {
-  request<T = any>(config: AxiosRequestConfig): Promise<AxiosResponse<T>>;
-}
+import type { AxiosRequestConfig, AxiosResponse, AxiosError, AxiosInstance } from 'axios';
 
 /**
  * Axios HTTP Builder 实现
  */
 export class AxiosHttpBuilder extends HttpBuilder {
-  private httpRequester: HttpRequester;
+  private axiosInstance: AxiosInstance;
 
-  constructor(url: string, httpRequester: HttpRequester) {
+  constructor(url: string, axiosInstance: AxiosInstance) {
     super(url);
-    this.httpRequester = httpRequester;
+    this.axiosInstance = axiosInstance;
   }
 
   public build(): Http {
@@ -40,7 +33,7 @@ export class AxiosHttpBuilder extends HttpBuilder {
             config.data = this.content_;
           }
 
-          const response = await this.httpRequester.request(config);
+          const response = await this.axiosInstance.request(config);
           
           const responseData = typeof response.data === 'string' 
             ? response.data 
