@@ -1,35 +1,14 @@
 import { HttpBuilder, Http } from '../core';
-
-/**
- * Gateway SDK 接口定义，避免直接依赖 gateway-ts-sdk 包
- */
-export interface GatewayHeaders {
-  [key: string]: string;
-}
-
-/**
- * 头部构建器接口 - 只需要代理设置和构建方法
- */
-export interface HeaderBuilder {
-  setProxy(url: string, method: string): HeaderBuilder;
-  build(): GatewayHeaders;
-}
-
-/**
- * Gateway 客户端接口 - 只需要发送请求的方法
- */
-export interface GatewayClient {
-  send(command: string, data: any, responseType: any, headers?: GatewayHeaders): Promise<any>;
-}
+import { HeaderBuilder, StreamGatewayClient, HttpMethod } from 'gateway-ts-sdk';
 
 /**
  * Gateway SDK HTTP Builder 实现
  */
 export class GatewayHttpBuilder extends HttpBuilder {
-  private client: GatewayClient;
+  private client: StreamGatewayClient;
   private headerBuilder: HeaderBuilder;
 
-  constructor(url: string, client: GatewayClient, headerBuilder: HeaderBuilder) {
+  constructor(url: string, client: StreamGatewayClient, headerBuilder: HeaderBuilder) {
     super(url);
     this.client = client;
     this.headerBuilder = headerBuilder;
@@ -41,23 +20,34 @@ export class GatewayHttpBuilder extends HttpBuilder {
         try {
           // 使用 Gateway SDK 的代理功能
           const proxyHeaders = this.headerBuilder
-            .setProxy(`${this.baseUrl_}${this.uri_}`, this.method_)
+            .setProxy(`${this.baseUrl_}${this.uri_}`, this.method_ as HttpMethod)
             .build();
 
           // 合并自定义头部
           for (const [key, value] of this.headers_) {
-            proxyHeaders[key] = value;
+            proxyHeaders.set(key, value);
+          }
+
+          // 准备请求数据
+          let requestData: object = {};
+          if (this.content_) {
+            try {
+              requestData = JSON.parse(this.content_);
+            } catch {
+              // 如果不是 JSON，包装为对象
+              requestData = { data: this.content_ };
+            }
           }
 
           // 使用 Gateway 客户端发送请求
           const result = await this.client.send(
             'API/Proxy', 
-            this.content_ || {}, 
+            requestData, 
             String,
             proxyHeaders
           );
           
-          return [result, null];
+          return [result as string, null];
         } catch (error: any) {
           const httpError = new Error(error.message || 'Gateway request failed');
           
