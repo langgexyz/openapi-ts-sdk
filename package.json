@@ -1,7 +1,7 @@
 {
   "name": "openapi-ts-sdk",
-  "version": "1.0.0",
-  "description": "OpenAPI-based TypeScript SDK library with multiple HTTP implementations (Axios, Fetch, Gateway)",
+  "version": "2.0.0",
+  "description": "OpenAPI TypeScript SDK core package - provides base HTTP builder abstractions and interfaces",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "commonjs",
@@ -9,30 +9,22 @@
     "build": "tsc",
     "watch": "tsc --watch",
     "clean": "rm -rf dist",
-    "test": "npm run build && npm run test:all",
-    "test:all": "npm run test:core && npm run test:axios && npm run test:fetch && npm run test:gateway",
+    "test": "npm run build && npm run test:core",
     "test:core": "node tests/http-builder-core.test.js",
-    "test:axios": "node tests/axios-http-builder.test.js",
-    "test:fetch": "node tests/fetch-http-builder.test.js",
-    "test:gateway": "node tests/gateway-http-builder.test.js",
     "prepublishOnly": "npm run clean && npm run build && npm run test"
   },
   "keywords": [
     "openapi",
     "typescript",
     "sdk",
-    "client",
+    "core",
     "http",
-    "axios",
-    "fetch",
-    "gateway"
+    "builder",
+    "abstract"
   ],
   "author": "langgexyz",
   "license": "MIT",
-  "dependencies": {
-    "axios": "^1.11.0",
-    "gateway-ts-sdk": "file:../gateway-ts-sdk"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/node": "^20.0.0",
     "ts-node": "^10.9.0",

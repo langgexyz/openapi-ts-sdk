@@ -1,15 +1,12 @@
 /**
- * TypeScript SDK Client - 主入口文件
- * 支持多种 HTTP 实现的 TypeScript SDK 客户端库
+ * OpenAPI TypeScript SDK - 核心包
+ * 提供基础的 HTTP 构建器抽象类和接口定义
+ * 
+ * 实现包：
+ * - openapi-ts-sdk-axios: Axios HTTP 实现
+ * - openapi-ts-sdk-fetch: Fetch HTTP 实现  
+ * - openapi-ts-sdk-gateway: Gateway HTTP 实现
  */
 
-// 核心接口和类
+// 核心接口和抽象类
 export * from './core';
-
-// HTTP 实现
-export { AxiosHttpBuilder } from './axios';
-export { GatewayHttpBuilder } from './gateway';
-export { FetchHttpBuilder } from './fetch';
-
-// 从 gateway-ts-sdk 重新导出真实类型
-export { HeaderBuilder, StreamGatewayClient as GatewayClient, HttpMethod } from 'gateway-ts-sdk';

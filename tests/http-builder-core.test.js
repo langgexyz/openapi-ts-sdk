@@ -1,5 +1,14 @@
 // HTTP Builder 核心功能测试
-const { HttpMethod } = require('../dist/index');
+const { HttpMethod, HttpBuilder } = require('../dist/index');
+
+// 创建测试用的 HttpBuilder 实现
+class TestHttpBuilder extends HttpBuilder {
+  build() {
+    return {
+      send: async () => ['test response', null]
+    };
+  }
+}
 
 console.log('=== HTTP Builder 核心功能测试 ===');
 
@@ -38,11 +47,10 @@ try {
   console.error('❌ HttpMethod 枚举测试失败:', error.message);
 }
 
-// 2. 测试基础构建器功能（通过 FetchHttpBuilder）
+// 2. 测试基础构建器功能（通过自定义测试实现）
 console.log('\n2. HttpBuilder 基础功能测试:');
 try {
-  const { FetchHttpBuilder } = require('../dist/index');
-  const builder = new FetchHttpBuilder('https://api.example.com');
+  const builder = new TestHttpBuilder('https://api.example.com');
   
   // 测试链式调用
   const chainedBuilder = builder
@@ -90,8 +98,7 @@ try {
 // 3. 测试头部管理
 console.log('\n3. HttpBuilder 头部管理测试:');
 try {
-  const { FetchHttpBuilder } = require('../dist/index');
-  const builder = new FetchHttpBuilder('https://api.example.com');
+  const builder = new TestHttpBuilder('https://api.example.com');
   
   // 添加多个头部
   builder
@@ -137,8 +144,7 @@ try {
 // 4. 测试 Pusher 功能
 console.log('\n4. HttpBuilder Pusher 功能测试:');
 try {
-  const { FetchHttpBuilder } = require('../dist/index');
-  const builder = new FetchHttpBuilder('https://api.example.com');
+  const builder = new TestHttpBuilder('https://api.example.com');
   
   let pushedData = null;
   const testPusher = (data) => {
@@ -169,8 +175,7 @@ try {
 // 5. 测试默认值
 console.log('\n5. HttpBuilder 默认值测试:');
 try {
-  const { FetchHttpBuilder } = require('../dist/index');
-  const builder = new FetchHttpBuilder('https://api.example.com');
+  const builder = new TestHttpBuilder('https://api.example.com');
   
   // 检查默认值
   if (builder.uri() === '') {
@@ -204,8 +209,7 @@ try {
 // 6. 测试 setHeaders 批量设置
 console.log('\n6. HttpBuilder 批量设置头部测试:');
 try {
-  const { FetchHttpBuilder } = require('../dist/index');
-  const builder = new FetchHttpBuilder('https://api.example.com');
+  const builder = new TestHttpBuilder('https://api.example.com');
   
   const headersMap = new Map([
     ['Content-Type', 'application/json'],
