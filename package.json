@@ -1,7 +1,7 @@
 {
-  "name": "ts-sdk-client",
+  "name": "openapi-ts-sdk",
   "version": "1.0.0",
-  "description": "TypeScript SDK client library with multiple HTTP implementations (Axios, Fetch, Gateway)",
+  "description": "OpenAPI-based TypeScript SDK library with multiple HTTP implementations (Axios, Fetch, Gateway)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "commonjs",
@@ -18,13 +18,14 @@
     "prepublishOnly": "npm run clean && npm run build && npm run test"
   },
   "keywords": [
+    "openapi",
     "typescript",
     "sdk",
     "client",
     "http",
     "axios",
     "fetch",
-    "gateway-ts-sdk"
+    "gateway"
   ],
   "author": "langgexyz",
   "license": "MIT",

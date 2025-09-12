@@ -1,6 +1,6 @@
-# TypeScript SDK Client
+# OpenAPI TypeScript SDK
 
-一个支持多种 HTTP 实现的 TypeScript SDK 客户端库，提供统一的 HTTP 构建器接口，支持 Axios、Fetch 和 Gateway 三种实现方式。
+一个基于 OpenAPI 规范、支持多种 HTTP 实现的 TypeScript SDK 客户端库，提供统一的 HTTP 构建器接口，支持 Axios、Fetch 和 Gateway 三种实现方式。
 
 ## ✨ 特性
 
@@ -18,13 +18,13 @@
 ### 安装
 
 ```bash
-npm install ts-sdk-client
+npm install openapi-ts-sdk
 ```
 
 ### 基本使用
 
 ```typescript
-import { AxiosHttpBuilder, FetchHttpBuilder, HttpMethod } from 'ts-sdk-client';
+import { AxiosHttpBuilder, FetchHttpBuilder, HttpMethod } from 'openapi-ts-sdk';
 import axios from 'axios';
 
 // 使用 Axios 实现
@@ -53,7 +53,7 @@ const [response2, error2] = await fetchHttp.send();
 ### Axios HTTP Builder
 
 ```typescript
-import { AxiosHttpBuilder, HttpMethod } from 'ts-sdk-client';
+import { AxiosHttpBuilder, HttpMethod } from 'openapi-ts-sdk';
 import axios from 'axios';
 
 // 创建自定义 axios 实例
@@ -86,7 +86,7 @@ const [response, error] = await http.send();
 ### Fetch HTTP Builder
 
 ```typescript
-import { FetchHttpBuilder, HttpMethod } from 'ts-sdk-client';
+import { FetchHttpBuilder, HttpMethod } from 'openapi-ts-sdk';
 
 const builder = new FetchHttpBuilder('https://api.example.com');
 
@@ -103,7 +103,7 @@ const [response, error] = await http.send();
 ### Gateway HTTP Builder
 
 ```typescript
-import { GatewayHttpBuilder, HttpMethod } from 'ts-sdk-client';
+import { GatewayHttpBuilder, HttpMethod } from 'openapi-ts-sdk';
 
 // 需要提供 Gateway 客户端和头部构建器实例
 const gatewayClient = new YourGatewayClient();
@@ -128,7 +128,7 @@ const [response, error] = await http.send();
 ### API 类封装示例
 
 ```typescript
-import { AxiosHttpBuilder, HttpMethod } from 'ts-sdk-client';
+import { AxiosHttpBuilder, HttpMethod } from 'openapi-ts-sdk';
 
 class TwitterApi {
   constructor(private httpBuilder: AxiosHttpBuilder) {}
@@ -187,7 +187,7 @@ const timeline = await api.searchTimeline({ caAddress: '0x123...' });
 ### 目录结构
 
 ```
-ts-sdk-client/
+openapi-ts-sdk/
 ├── src/                          # TypeScript 源代码
 │   ├── core/                     # 核心接口和抽象类
 │   │   ├── http-builder.abstract.ts  # HTTP 构建器抽象类（包含接口）
@@ -258,7 +258,7 @@ npm run clean
 所有的 `setContent()` 调用都会进行 JSON 格式验证：
 
 ```typescript
-import { FetchHttpBuilder, HttpMethod } from 'ts-sdk-client';
+import { FetchHttpBuilder, HttpMethod } from 'openapi-ts-sdk';
 
 const builder = new FetchHttpBuilder('https://api.example.com');
 
@@ -332,7 +332,7 @@ const [response, error] = await http.send();
 ## 🔗 相关项目
 
 - `gateway-ts-sdk`: Gateway SDK 依赖库
-- `ts-sdk-client-generator`: 代码生成器工具
+- `openapi-ts-sdk-generator`: 代码生成器工具
 
 ## 📞 支持与反馈
 
