@@ -8,3 +8,4 @@
  * - openapi-ts-sdk-gateway: Gateway HTTP 实现
  */
 export * from './src/core';
+//# sourceMappingURL=index.d.ts.map

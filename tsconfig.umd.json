@@ -3,7 +3,9 @@
   "compilerOptions": {
     "module": "UMD",
     "outDir": "dist/umd",
-    "resolveJsonModule": false
+    "resolveJsonModule": false,
+    "declaration": false,
+    "declarationMap": false
   },
   "include": [
     "src/**/*",

@@ -91,3 +91,4 @@ export declare abstract class HttpBuilder {
      */
     abstract build(): Http;
 }
+//# sourceMappingURL=http-builder.abstract.d.ts.map

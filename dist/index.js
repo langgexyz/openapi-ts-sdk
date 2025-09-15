@@ -7,4 +7,6 @@
  * - openapi-ts-sdk-fetch: Fetch HTTP 实现
  * - openapi-ts-sdk-gateway: Gateway HTTP 实现
  */
-export * from './core';
+// 核心接口和抽象类
+export * from './src/core';
+//# sourceMappingURL=index.js.map
