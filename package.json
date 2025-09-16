@@ -1,6 +1,6 @@
 {
   "name": "openapi-ts-sdk",
-  "version": "1.0.0-alpha.4",
+  "version": "1.0.0",
   "description": "OpenAPI TypeScript SDK core package - provides base HTTP builder abstractions and interfaces",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
