@@ -1,16 +1,14 @@
 {
   "name": "openapi-ts-sdk",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "OpenAPI TypeScript SDK core package - provides base HTTP builder abstractions and interfaces",
   "main": "dist/cjs/index.js",
   "module": "dist/esm/index.js",
   "types": "dist/types/index.d.ts",
-  "browser": "dist/umd/index.js",
   "scripts": {
-    "build": "npm run build:cjs && npm run build:esm && npm run build:umd && npm run build:types",
+    "build": "npm run build:cjs && npm run build:esm && npm run build:types",
     "build:cjs": "tsc -p tsconfig.cjs.json",
     "build:esm": "tsc -p tsconfig.json",
-    "build:umd": "tsc -p tsconfig.umd.json",
     "build:types": "tsc -p tsconfig.types.json",
     "watch": "tsc --watch",
     "clean": "rm -rf dist",
